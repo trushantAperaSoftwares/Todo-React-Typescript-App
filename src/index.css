@@ -1,0 +1,5 @@
+#root .react-hot-toast-container {
+  left: 50% !important;
+  transform: translateX(-50%) !important;
+  width: 200px;
+}

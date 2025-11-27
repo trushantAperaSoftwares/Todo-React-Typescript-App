@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from "react";
 import type { ReactNode } from 'react';
+import toast from "react-hot-toast";
 
 
 export type TodosProviderProps = {
@@ -24,9 +25,9 @@ export const todosContext = createContext<TodosContext | null>(null);
 
 export const TodosProvider = ({ children }: TodosProviderProps) => {
 
-    const [todos, setTodos] = useState<Todo[]>(()=> {
+    const [todos, setTodos] = useState<Todo[]>(() => {
         try {
-            const newTodos = localStorage.getItem("todos") ||"[]"
+            const newTodos = localStorage.getItem("todos") || "[]"
             return JSON.parse(newTodos) as Todo[]
         } catch (error) {
             return []
@@ -45,6 +46,8 @@ export const TodosProvider = ({ children }: TodosProviderProps) => {
             ...prev
             ]
             localStorage.setItem("todos", JSON.stringify(newTodos))
+            toast.success("Task added!");
+            
             return newTodos
         })
     };
@@ -52,13 +55,15 @@ export const TodosProvider = ({ children }: TodosProviderProps) => {
     // Toggle Completed
     const toggleTodoAsCompleted = (id: string) => {
         setTodos((prev) => {
-            let newTodos = prev.map((todo)=> {
-                if(todo.id === id ){
-                    return {...todo, completed:!todo.completed}
+            let newTodos = prev.map((todo) => {
+                if (todo.id === id) {
+                    return { ...todo, completed: !todo.completed }
                 }
+
                 return todo;
             })
-                    localStorage.setItem("todos", JSON.stringify(newTodos))
+            localStorage.setItem("todos", JSON.stringify(newTodos))
+            toast("Task updated!");
             return newTodos;
         });
     };
@@ -67,10 +72,13 @@ export const TodosProvider = ({ children }: TodosProviderProps) => {
     // delete todo
     const handleDeleteTodo = (id: string) => {
         setTodos((prev) => {
-            let newTodo = prev.filter((filterTodo) => filterTodo.id !== id)
-            return newTodo
-        })
-    }
+            const newTodos = prev.filter((todo) => todo.id !== id);
+            localStorage.setItem("todos", JSON.stringify(newTodos));
+            toast.error("Task deleted!");
+            return newTodos;
+        });
+    };
+
 
     return (
         <todosContext.Provider value={{ todos, handleAddTodo, toggleTodoAsCompleted, handleDeleteTodo }}>
