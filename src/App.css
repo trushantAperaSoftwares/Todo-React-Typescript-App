@@ -80,7 +80,7 @@ form input{
     border-radius: .3rem;
     width: 45rem;
     margin: 4rem 0;
-    user-focus: none;
+    /* user-focus: none; */
     padding: .6rem 1rem;
     font-size: 1.6rem;
     letter-spacing: .06rem;
